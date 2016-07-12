@@ -45,6 +45,33 @@ You probably also want the following:
         <meta name="msapplication-TileImage" content="/path/to/favicon-144.png">
 
    Replace #FFFFFF with your desired tile color.
+3. IE 11 Tile for Windows 8.1 Start Screen
+
+    .. code-block:: html
+
+        <meta name="application-name" content="Name">
+        <meta name="msapplication-tooltip" content="Tooltip">
+        <meta name="msapplication-config" content="/path/to/ieconfig.xml">
+
+        
+    ieconfig.xml
+
+    .. code-block:: xml
+
+        <?xml version="1.0" encoding="utf-8"?>
+            <browserconfig>
+              <msapplication>
+                <tile>
+                  <square70x70logo src="/path/to/smalltile.png"/>
+                  <square150x150logo src="/path/to/mediumtile.png"/>
+                  <wide310x150logo src="/path/to/widetile.png"/>
+                  <square310x310logo src="/path/to/largetile.png"/>
+                  <TileColor>#FFFFFF</TileColor>
+                </tile>
+              </msapplication>
+            </browserconfig>
+
+        
 
 Very Optional, for the Obsessive
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,7 +81,9 @@ If you're obsessive, you want all this too:
 1. Largest to smallest apple-touch-icons [3]_:
 
     .. code-block:: html
-
+		<!-- For Iphone 6 plus running iOS 8: -->
+		<link rel="apple-touch-icon-precomposed" sizes="180x180" href="/path/to/favicon-180.png">
+		
         <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
         <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/path/to/favicon-152.png">
 
@@ -78,7 +107,10 @@ If you're obsessive, you want all this too:
     .. code-block:: html
 
         <link rel="icon" href="/path/to/favicon-32.png" sizes="32x32">
+3. Favicon Chrome for Android
 
+        <link rel="shortcut icon" sizes="196x196" href="/path/to/favicon-196.png">
+        
 The Images
 ----------
 
@@ -114,10 +146,16 @@ Size    Name            Purpose
 96x96   favicon-96.png  GoogleTV icon
 120x120 favicon-120.png iPhone retina touch icon (Change for iOS 7: up from 114x114)
 128x128 favicon-128.png Chrome Web Store icon
+128x128	smalltile.png	Small Windows 8 Star Screen Icon
 144x144 favicon-144.png IE10 Metro tile for pinned site
 152x152 favicon-152.png iPad retina touch icon (Change for iOS 7: up from 144x144)
-195x195 favicon-195.png Opera Speed Dial icon
+180x180 favicon-180.png iPhone 6 plus
+195x195 favicon-195.png Opera Speed Dial icon (Not working in Opera 15 and later)
+196x196 favicon-196.png Chrome for Android home screen icon
 228x228 favicon-228.png Opera Coast icon
+270x270	mediumtile.png	Medium Windows 8 Start Screen Icon
+558x270	widetile.png	Wide Windows 8 Start Screen Icon
+558x558	largetile.png	Large Windows 8 Start Screen Icon
 ======= =============== =======================================================================
 
 ICO File
@@ -150,6 +188,15 @@ TODO: get confirmation that IE9+ supports .ico files that contain .png files (is
 
 .. _`#9`: https://github.com/audreyr/favicon-cheat-sheet/issues/9
 
+SVG File
+--------
+
+Pinned tabs in Safari 9+ use an SVG vector mask for the favicon instead of any other PNG/ICO/etc. favicons that may be present. Vector artwork in the SVG file should be black only (no shades of black or other colors) with a transparent background. Also, a fill color needs to be defined in the <link> tag - a hex value or color shorthand will work. Here's the markup for adding the icon:
+
+    .. code-block:: html
+    
+    <link rel='mask-icon' href='icon.svg' color='#ff0000'>
+
 Helpful Tools
 -------------
 
@@ -158,9 +205,14 @@ I recommend:
 1. OptiPNG, to optimize .png files before putting them into an .ico: http://optipng.sourceforge.net/
 2. ImageMagick, to create an .ico from .png files: http://blog.morzproject.com/convert-multiple-png-images-into-a-single-icon-file/ & http://www.imagemagick.org/Usage/thumbnails/#favicon
 
+    .. code-block:: bash
+
+        $ convert favicon-16.png favicon-32.png favicon.ico
+
 Others that I haven't tried:
 
-* Ubuntu/Debian package `icoutil` has an icotool program which creates .ico from .png files.
+* Favic-o-matic: http://www.favicomatic.com - A favicon generator that cares of .ico, .png and HTML code to make your website shine on every platform, browser or device
+* Ubuntu/Debian package `icoutil` (Fedora package `icoutils`_) provides the program `icotool` which creates .ico from .png files.
 * MSDN recommends this web-based .ico creator: http://www.xiconeditor.com
 * Resize favicons: http://faviconer.com
 * More resizing: https://github.com/abrkn/icon
@@ -169,6 +221,10 @@ Others that I haven't tried:
 * Web Icon - a simple shell script that generates favicon and touch icons: https://github.com/emarref/webicon
 * Icon Slate app (OS X): https://itunes.apple.com/us/app/icon-slate/id439697913
 * png2ico wrapper for ImageMagick: https://github.com/bebraw/png2ico
+* `GIMP`_: export as .ico, each layer is saved as an image
+
+.. _`icoutils`: https://apps.fedoraproject.org/packages/icoutils
+.. _`GIMP`: https://www.gimp.org/
 
 Forcing a Favicon Refresh
 -------------------------
@@ -176,7 +232,7 @@ Forcing a Favicon Refresh
 Not normally needed. This is only for those frustrating times when you can't
 get your favicon to refresh, during development:
 
-* Clear the browser cache (Ctrl+F5 or Ctrl+Shift+R).
+* Clear the browser cache on Windows (Ctrl+F5 or Ctrl+Shift+R) and on Mac (Command + Shift + R).
 * Also close and reopen browser if IE.
 * If still stuck, try opening new tab. Or see http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh
 * Temporarily add explicit HTML markup and append a query string. Remove
@@ -220,7 +276,7 @@ No, that's only if you don't explicitly specify the browser/device-specific
 
 If you don't have favicon.ico in the root consider adding one, or returning a HTTP 204 instead.
 Many tools and services e.g. bookmarking sites, feed readers, web crawlers etc., request a 
-favicon.ico from the site root, and so recieve a HTTP 404 if it's not present. In the worst 
+favicon.ico from the site root, and so receive a HTTP 404 if it's not present. In the worst 
 case some frameworks will return a custom error page which is likely to be many times larger
 than the missing favicon.
 
@@ -265,7 +321,7 @@ References
 ----------
 
 .. [1] http://mathiasbynens.be/notes/rel-shortcut-icon
-.. [2] http://www.w3.org/html/wg/drafts/html/CR/links.html#rel-icon
+.. [2] http://www.w3.org/TR/html5/links.html#rel-icon
 .. [3] Adapted from http://mathiasbynens.be/notes/touch-icons
 .. [4] No specifics given by MSDN.
 .. [5] http://blog.morzproject.com/convert-multiple-png-images-into-a-single-icon-file/
